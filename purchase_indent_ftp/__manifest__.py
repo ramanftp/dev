@@ -17,7 +17,7 @@
         # 'data/mail_template_data.xml',
         'views/purchase_indent_views.xml',
     ],
-    'images': ['images/img.png','images/img1.png','images/img2.png']
+    'images': ['images/img.png','images/img1.png','images/img2.png'],
     'demo': [],
     'installable': True,
     'application': True,
