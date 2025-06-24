@@ -1,0 +1,9 @@
+<odoo>
+    <record id="seq_purchase_indent" model="ir.sequence">
+        <field name="name">Purchase Indent</field>
+        <field name="code">purchase.indent</field>
+        <field name="prefix">PI/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

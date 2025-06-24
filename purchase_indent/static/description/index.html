@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Purchase Indent</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      line-height: 1.6;
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Purchase Indent</h1>
+
+<h3>Configuration</h3>
+<p>To assign permissions:</p>
+<ol>
+  <li>Navigate to <code>Settings → Users &amp; Companies → Groups</code></li>
+  <li>Locate either:
+    <ul>
+      <li>"Purchase Indent Manager" group</li>
+      <li>"Purchase Indent User" group</li>
+    </ul>
+  </li>
+  <li>Assign users to appropriate groups</li>
+</ol>
+
+<h4>Purchase Indent Manager (Full Access)</h4>
+<ul>
+  <li><strong>Actions</strong>:
+    <ul>
+      <li>Submit indents for approval</li>
+      <li>Approve/reject indents</li>
+      <li>Cancel indents</li>
+      <li>Generate purchase orders</li>
+      <li>Access all reporting</li>
+    </ul>
+  </li>
+</ul>
+
+<h4>Purchase Indent User (Restricted Access)</h4>
+<ul>
+  <li><strong>Actions</strong>:
+    <ul>
+      <li>Create new indents</li>
+      <li>Edit own draft indents</li>
+      <li>Submit own indents for approval</li>
+      <li>View status of own indents</li>
+    </ul>
+  </li>
+  <li><strong>Restrictions</strong>:
+    <ul>
+      <li>Cannot approve/reject indents</li>
+      <li>Cannot delete indents after submission</li>
+      <li>Cannot generate purchase orders</li>
+    </ul>
+  </li>
+</ul>
+
+<h2>Purpose</h2>
+<p>Creating and managing Purchase Indents in the Odoo system, which serve as internal requests for procurement of goods/services before generating formal Purchase Orders.</p>
+
+<h2>Roles &amp; Responsibilities</h2>
+<ul>
+  <li><strong>Requester</strong>: Initiates the indent request</li>
+  <li><strong>Technical Approver</strong>: Reviews and approves/rejects the indent</li>
+  <li><strong>Procurement Team</strong>: Converts approved indents to Purchase Orders</li>
+</ul>
+
+<h2>1. Purchase Indent Creation</h2>
+
+<h3>1.1 Initiate New Indent</h3>
+<ol>
+  <li>Navigate to: <code>Purchase Indents → Create</code></li>
+  <li>System auto-generates a unique reference number</li>
+  <li>Fill in mandatory fields:
+    <ul>
+      <li>Project</li>
+      <li>Department</li>
+      <li>Request Date (defaults to current date)</li>
+      <li>Requester (auto-populated with current user)</li>
+    </ul>
+  </li>
+</ol>
+
+<h3>1.2 Add Line Items</h3>
+<ol>
+  <li>Click "Add a line" in the Items section</li>
+  <li>For each item:
+    <ul>
+      <li>Select Product (required)</li>
+      <li>Description auto-populates but can be modified</li>
+      <li>Enter Quantity (defaults to 1)</li>
+      <li>Unit of Measure auto-populates from product</li>
+      <li>Verify/select Vendor (required before submission)</li>
+      <li>Unit Price auto-populates from product cost but can be modified</li>
+      <li>Subtotal calculates automatically (Quantity × Unit Price)</li>
+    </ul>
+  </li>
+</ol>
+
+<h3>1.3 Save Draft</h3>
+<ul>
+  <li>Click "Save" to store as draft</li>
+  <li>Draft indents can be edited until submission</li>
+</ul>
+
+<h2>2. Indent Submission &amp; Approval Workflow</h2>
+
+<h3>2.1 Submit for Approval</h3>
+<ol>
+  <li>Verify all line items are complete</li>
+  <li>Ensure all products have vendors assigned</li>
+  <li>Click "Submit" button</li>
+  <li>System validates:
+    <ul>
+      <li>At least one line item exists</li>
+      <li>All products have vendors</li>
+    </ul>
+  </li>
+  <li>Status changes to "Waiting Approval"</li>
+</ol>
+
+<h3>2.2 Technical Approval</h3>
+<ol>
+  <li>Technical approver reviews indent</li>
+  <li>Options:
+    <ul>
+      <li><strong>Approve</strong>:
+        <ul>
+          <li>Click "Approve"</li>
+          <li>System records approver and timestamp</li>
+          <li>Status changes to "Approved"</li>
+        </ul>
+      </li>
+      <li><strong>Reject</strong>:
+        <ul>
+          <li>Click "Reject"</li>
+          <li>Enter rejection reason in pop-up wizard</li>
+          <li>Status changes to "Rejected"</li>
+          <li>Requester notified</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<h3>2.3 Additional Statuses</h3>
+<ul>
+  <li><strong>Cancelled</strong>: Can be set by authorized users to abort the process</li>
+  <li><strong>Draft</strong>: Editable state before submission</li>
+</ul>
+
+<h2>3. Purchase Order Generation</h2>
+
+<h3>3.1 Create Purchase Orders</h3>
+<ol>
+  <li>From approved indent, click "Create Purchase Orders"</li>
+  <li>System:
+    <ul>
+      <li>Groups items by vendor</li>
+      <li>Checks for existing draft RFQs for same vendor/project</li>
+      <li>Creates new RFQs or updates existing ones:
+        <ul>
+          <li>New RFQ: Creates complete purchase order</li>
+          <li>Existing RFQ: Adds new lines or updates quantities</li>
+        </ul>
+      </li>
+      <li>Maintains origin tracking with indent reference</li>
+      <li>Links generated POs to the indent record</li>
+    </ul>
+  </li>
+</ol>
+
+<h3>3.2 View Generated POs</h3>
+<ul>
+  <li>Approved indent shows count of linked POs</li>
+  <li>Click PO count to view list of generated purchase orders</li>
+</ul>
+
+<h2>4. Special Cases &amp; Validations</h2>
+
+<h3>4.1 Vendor Requirements</h3>
+<ul>
+  <li>All products must have assigned vendors before:
+    <ul>
+      <li>Submitting for approval</li>
+      <li>Generating purchase orders</li>
+    </ul>
+  </li>
+  <li>System prevents submission/PO generation if vendors missing</li>
+</ul>
+
+<h3>4.2 Price Calculations</h3>
+<ul>
+  <li>Unit prices default to product standard cost</li>
+  <li>Subtotals calculate automatically</li>
+  <li>Prices can be manually overridden before submission</li>
+</ul>
+
+<h2>5. Reporting &amp; Tracking</h2>
+
+<h3>5.1 Audit Trail</h3>
+<ul>
+  <li>System tracks:
+    <ul>
+      <li>Creation date/user</li>
+      <li>Submission date</li>
+      <li>Approval/rejection details</li>
+      <li>PO generation history</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>5.2 Document Reference</h3>
+<ul>
+  <li>All generated POs include indent reference in their origin field</li>
+</ul>
+
+</body>
+</html>
