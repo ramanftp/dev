@@ -1,0 +1,122 @@
+<odoo>
+    <!-- Purchase Indent list View -->
+    <record id="view_purchase_indent_list" model="ir.ui.view">
+        <field name="name">purchase.indent.list</field>
+        <field name="model">purchase.indent</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="request_date"/>
+                <field name="state"/>
+                <field name="user_id"/>
+                <field name="total_amount"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Purchase Indent Form View -->
+    <record id="view_purchase_indent_form" model="ir.ui.view">
+        <field name="name">purchase.indent.form</field>
+        <field name="model">purchase.indent</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" string="Submit" type="object" class="oe_highlight" invisible="state != 'draft'"
+                            />
+                    <button name="action_technical_approve" string="Approve" type="object" class="oe_highlight"
+                           invisible="state != 'technical'" groups="purchase_indent.purchase_indent_group_manager"/>
+                    <button name="action_technical_reject" string="Reject" type="object"
+                           invisible="state != 'technical'"  groups="purchase_indent.purchase_indent_group_manager"/>
+                    <button name="action_create_purchase_orders" string="Create RFQ" type="object"
+                            invisible="po_count != 0 or state != 'approved'"  groups="purchase_indent.purchase_indent_group_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,technical,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_rfq" type="object" invisible="po_count == 0"
+                            class="oe_stat_button" icon="fa-cart-plus">
+                            <div class="o_stat_info">
+                                <field name="po_count" class="o_stat_value"/>
+                                <span class="o_stat_text"> RFQ'S</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1 class="d-flex flex-row">
+                            <field name="name" options="{'line_breaks': False}" widget="text" class="o_text_overflow" readonly="1" force_save="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id" readonly=" state != 'draft'"/>
+                            <field name="department_id" readonly="state != 'draft'"/>
+                            <field name="request_date" readonly="state != 'draft'"/>
+                            <field name="user_id" readonly="1"/>
+                        </group>
+
+                        <group string="Approval Information">
+                            <field name="technical_approver"
+                                   invisible="state in ['draft','technical']" readonly="state != 'draft'"/>
+                            <field name="technical_approval_date" readonly="1"/>
+                            <field name="rejection_reason" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Items">
+                            <field name="indent_lines">
+                                <list editable="bottom" delete="0">
+                                    <field name="product_id" readonly="parent.state not in ['technical','draft']"/>
+                                    <field name="description" readonly="parent.state not in ['technical','draft']"/>
+                                    <field name="quantity" readonly="parent.state not in ['technical','draft']"/>
+                                    <field name="uom_id" readonly="parent.state not in ['technical','draft']"/>
+                                    <field name="price_unit" readonly="parent.state not in ['technical','draft']"/>
+                                    <field name="price_subtotal" readonly="parent.state not in ['technical','draft']"/>
+                                    <field name="seller_id" readonly="parent.state not in ['technical','approved']" groups="purchase_indent.purchase_indent_group_manager" required="parent.state == 'approved'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Purchase Indent -->
+    <record id="action_purchase_indent" model="ir.actions.act_window">
+        <field name="name">Purchase Indents</field>
+        <field name="res_model">purchase.indent</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+    <!-- Purchase Indents Submenu -->
+    <menuitem id="menu_purchase_indent_root" name="Purchase Indents"
+              groups="purchase_indent.purchase_indent_group_user"
+              web_icon="purchase_indent,static/description/icon.png"
+              action="action_purchase_indent"/>
+
+
+     <record id="view_indent_reject_wizard_form" model="ir.ui.view">
+        <field name="name">indent.reject.wizard.form</field>
+        <field name="model">indent.reject.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="reason" placeholder="Reason for rejection..."/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_reject_indent" string="Reject" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+</odoo>
